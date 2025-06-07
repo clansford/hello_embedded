@@ -4,6 +4,7 @@ edition = "2018"
 readme = "README.md"
 name = "app"
 version = "0.1.0"
+default-run = "app"
 
 [dependencies]
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }
@@ -17,6 +18,7 @@ panic-probe = "1.0.0"
 # Uncomment for the panic example.
 # panic-itm = "0.4.1"
 panic-semihosting = "0.6.0"
+switch-hal = "0.4.0"
 
 # Uncomment for the allocator example.
 # embedded-alloc = "0.6.0"

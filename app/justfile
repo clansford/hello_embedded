@@ -4,13 +4,13 @@ alias b := build
 build profile=profile:
     cargo build --profile {{profile}}
 
-flash profile=profile:
+flash profile=profile: (build profile)
     #!/usr/bin/env bash
     set -euxo pipefail
     if [[ {{profile}} == "release" ]]; then
-        cargo flash --release --chip STM32F446RE;
+        cargo flash --release --chip STM32F446RE --bin app;
     else
-        cargo flash --chip STM32F446RE;
+        cargo flash --chip STM32F446RE --bin app;
     fi
 
 debug:

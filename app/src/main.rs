@@ -3,25 +3,30 @@
 #![no_main]
 
 use cortex_m_rt::entry;
+// use cortex_m_semihosting::hprintln;
 use hal::gpio::PinState;
 use hal::{pac, prelude::*};
 use panic_halt as _;
 use stm32f4xx_hal as hal;
+use switch_hal::{InputSwitch, IntoSwitch};
 
 #[entry]
 fn main() -> ! {
-  if let (Some(dp), Some(cp)) =
-    (pac::Peripherals::take(), cortex_m::peripheral::Peripherals::take())
-  {
-    let gpioa = dp.GPIOA.split();
+  let peripherals = pac::Peripherals::take();
+  if let Some(peripherals) = peripherals {
+    let gpioa = peripherals.GPIOA.split();
+    let gpioc = peripherals.GPIOC.split();
+
     let mut led = gpioa.pa5.into_push_pull_output_in_state(PinState::Low);
-    let rcc = dp.RCC.constrain();
-    let clocks = rcc.cfgr.sysclk(48.MHz()).freeze();
-    let mut delay = cp.SYST.delay(&clocks);
+    let button = gpioc.pc13.into_active_low_switch();
 
     loop {
-      led.toggle();
-      delay.delay_ms(5000);
+      let is_pressed = button.is_active().unwrap();
+      if is_pressed {
+        led.set_high();
+      } else {
+        led.set_low();
+      }
     }
   }
 
