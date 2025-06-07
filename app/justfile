@@ -1,0 +1,20 @@
+profile:="dev"
+alias b := build
+
+build profile=profile:
+    cargo build --profile {{profile}}
+
+flash profile=profile:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    if [[ {{profile}} == "release" ]]; then
+        cargo flash --release --chip STM32F446RE;
+    else
+        cargo flash --chip STM32F446RE;
+    fi
+
+debug:
+    gdb -x openocd.gdb target/thumbv7em-none-eabihf/debug/app
+
+start_openocd:
+    openocd
